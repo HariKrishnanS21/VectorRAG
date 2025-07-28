@@ -9,14 +9,9 @@ from pydantic import BaseModel
 import streamlit as st
 
 load_dotenv()
-
-client=genai.Client(api_key=os.getenv("GEMINI_API"))
 pc=Pinecone(api_key=os.getenv("API_KEY"))
-
 index_name="changiindex"
 index=pc.Index(index_name)
-
-model= SentenceTransformer("all-MiniLM-L6-v2")
 
 app=FastAPI()
 
@@ -24,6 +19,8 @@ class Query(BaseModel):
     question:str
 
 def get_response(query,k=3):
+    client=genai.Client(api_key=os.getenv("GEMINI_API"))
+    model= SentenceTransformer("all-MiniLM-L6-v2")
     query_vector=model.encode(query).tolist()
     query_response=index.query(vector=query_vector,top_k=k,include_metadata=True)
     context=[match["metadata"]["text"] for match in query_response["matches"]]
@@ -43,6 +40,4 @@ def get_response(query,k=3):
 def api_answer(data:Query):
     answer=get_response(data.question)
     return {"Answer":answer}
-
-
 
