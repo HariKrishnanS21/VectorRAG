@@ -1,0 +1,8 @@
+beautifulsoup4
+sentence-transformers
+playwright
+python-dotenv
+pinecone
+streamlit
+google-genai
+"fastapi[standard]"
